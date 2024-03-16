@@ -1,5 +1,7 @@
 package com.arfian.tmeu.presentation.home
 
+import DecimalInputVisualTransformation
+import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -30,79 +32,40 @@ import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.TransformedText
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.arfian.tmeu.util.DecimalFormatter
 
 @Composable
-internal fun HomeScreen() {
-    val viewModel: HomeViewModel = hiltViewModel()
+internal fun HomeScreen(){
+    val viewModel = HomeViewModel()
     HomeContent(viewModel)
 }
 
 @Composable
 fun HomeContent(viewModel: HomeViewModel) {
     val salesData by viewModel.data.collectAsStateWithLifecycle()
-
-    val target = salesData.target.toString()
-    val ach = salesData.ach.toString()
-    val salesNet = salesData.salesNet.toString()
-    val struk = salesData.struk.toString()
-    val apc = salesData.apc.toString()
-    val varian = salesData.varian.toString()
-    val penggantian = salesData.penggantian.toString()
-    val spd = salesData.spd.toString()
-    val spdPercentage = salesData.spdPercentage.toString()
-    val std = salesData.std.toString()
-    val stdPercentage = salesData.stdPercentage.toString()
-    val apc1 = salesData.apc1.toString()
-    val apc1Percentage = salesData.apc1Percentage.toString()
-    val margin = salesData.margin.toString()
-    val marginPercentage = salesData.marginPercentage.toString()
-    val salesLpptk = salesData.salesLpptk.toString()
-    val akmSales = salesData.akmSales.toString()
-
-    // State to control the visibility of the dialog
+    val decimalFormatter = DecimalFormatter()
     var showDialog by remember { mutableStateOf(false) }
-
-    // Show the dialog if showDialog is true
-    if (showDialog) {
-        GenerateResultDialog(
-            onDismiss = { showDialog = false },
-            target = target,
-            ach = ach,
-            salesNet = salesNet,
-            struk = struk,
-            apc = apc,
-            varian = varian,
-            penggantian = penggantian,
-            spd = spd,
-            spdPercentage = spdPercentage,
-            std = std,
-            stdPercentage = stdPercentage,
-            apc1 = apc1,
-            apc1Percentage = apc1Percentage,
-            margin = margin,
-            marginPercentage = marginPercentage,
-            salesLpptk = salesLpptk,
-            akmSales = akmSales
-        )
-    }
 
     Column {
         // A text field for entering the sales net
         OutlinedTextField(
-            value = salesNet,
+            value = salesData.salesNet.toString(),
             maxLines = 1,
             shape = MaterialTheme.shapes.small,
             onValueChange = {
-                val newValue = it.toIntOrNull() ?: 0 // Handle invalid input
+                val newValue = it.toIntOrNull() ?: 0
                 viewModel.setSalesNet(newValue)
             },
-            label = { Text(text = "Input jumlah sales Net!") },
+            label = { Text(text = "Sales Net") },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+            prefix = { Text(text = "Rp") },
+            visualTransformation = DecimalInputVisualTransformation(decimalFormatter),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp),
@@ -110,15 +73,17 @@ fun HomeContent(viewModel: HomeViewModel) {
 
         // A text field for entering the number of receipts
         OutlinedTextField(
-            value = struk,
+            value = salesData.struk.toString(),
             maxLines = 1,
             shape = MaterialTheme.shapes.small,
             onValueChange = {
-                val newValue = it.toIntOrNull() ?: 0 // Handle invalid input
+                val newValue = it.toIntOrNull() ?: 0
                 viewModel.setStruk(newValue)
             },
-            label = { Text(text = "Input jumlah struk!") },
+            label = { Text(text = "Struk") },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+            prefix = { Text(text = "") },
+            visualTransformation = DecimalInputVisualTransformation(decimalFormatter),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp),
@@ -126,15 +91,17 @@ fun HomeContent(viewModel: HomeViewModel) {
 
         // A text field for entering the number of variants
         OutlinedTextField(
-            value = varian,
+            value = salesData.varian.toString(),
             maxLines = 1,
             shape = MaterialTheme.shapes.small,
             onValueChange = {
-                val newValue = it.toIntOrNull() ?: 0 // Handle invalid input
+                val newValue = it.toIntOrNull() ?: 0
                 viewModel.setVarian(newValue)
             },
-            label = { Text(text = "Input jumlah varian!") },
+            label = { Text(text = "Varian") },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+            prefix = { Text(text = "Rp") },
+            visualTransformation = DecimalInputVisualTransformation(decimalFormatter),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp),
@@ -142,15 +109,17 @@ fun HomeContent(viewModel: HomeViewModel) {
 
         // A text field for entering the number of replacements
         OutlinedTextField(
-            value = penggantian,
+            value = salesData.penggantian.toString(),
             maxLines = 1,
             shape = MaterialTheme.shapes.small,
             onValueChange = {
-                val newValue = it.toIntOrNull() ?: 0 // Handle invalid input
+                val newValue = it.toIntOrNull() ?: 0
                 viewModel.setPenggantian(newValue)
             },
-            label = { Text(text = "Input jumlah penggantian!") },
+            label = { Text(text = "Penggantian") },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+            prefix = { Text(text = "Rp") },
+            visualTransformation = DecimalInputVisualTransformation(decimalFormatter),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp),
@@ -158,15 +127,17 @@ fun HomeContent(viewModel: HomeViewModel) {
 
         // A text field for entering the target
         OutlinedTextField(
-            value = target,
+            value = salesData.target.toString(),
             maxLines = 1,
             shape = MaterialTheme.shapes.small,
             onValueChange = {
-                val newValue = it.toIntOrNull() ?: 0 // Handle invalid input
+                val newValue = it.toIntOrNull() ?: 0
                 viewModel.setTarget(newValue)
             },
-            label = { Text(text = "Input jumlah target!") },
+            label = { Text(text = "Target") },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+            prefix = { Text(text = "Rp") },
+            visualTransformation = DecimalInputVisualTransformation(decimalFormatter),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp),
@@ -180,51 +151,41 @@ fun HomeContent(viewModel: HomeViewModel) {
             Text(text = "Generate")
         }
     }
+
+    if (showDialog) {
+        GenerateResultDialog(
+            onDismiss = { showDialog = false },
+            salesData = salesData,
+            context = LocalContext.current
+        )
+    }
 }
 
 @Composable
 fun GenerateResultDialog(
     onDismiss: () -> Unit,
-    target: String,
-    ach: String,
-    salesNet: String,
-    struk: String,
-    apc: String,
-    varian: String,
-    penggantian: String,
-    spd: String,
-    spdPercentage: String,
-    std: String,
-    stdPercentage: String,
-    apc1: String,
-    apc1Percentage: String,
-    margin: String,
-    marginPercentage: String,
-    salesLpptk: String,
-    akmSales: String
+    salesData: HomeViewModel.Data,
+    context: Context
 ) {
-    val openDialog by remember { mutableStateOf(true) }
-    val scrollState = rememberScrollState()
     val clipboardManager = LocalClipboardManager.current
-    val context = LocalContext.current
     val contentDialog = AnnotatedString.Builder(
         "LAPORAN SALES\n" +
                 "TMEU.MANDUNG\n" +
                 "Tgl :9/3/2024\n" +
-                "Target : $target\n" +
-                "Ach : $ach%\n" +
+                "Target : ${salesData.target}\n" +
+                "Ach: ${salesData.ach}%\n" +
                 "\n" +
-                "SALES Net : $salesNet\n" +
-                "Struk: $struk\n" +
-                "Apc : $apc\n" +
-                "Varian :+ $varian\n" +
-                "Penggantian: $penggantian\n" +
-                "SPD : $spd/$spdPercentage%\n" +
-                "STD : $std/$stdPercentage%.\n" +
-                "APC : $apc1/$apc1Percentage%\n" +
-                "Margin : $margin/$marginPercentage%\n" +
-                "com.arfian.tmeu.domain.model.Sales lpptk : $salesLpptk\n" +
-                "Akm sales : $akmSales\n" +
+                "SALES Net : ${salesData.salesNet}\n" +
+                "Struk: ${salesData.struk}\n" +
+                "Apc : ${salesData.apc}\n" +
+                "Varian :+ ${salesData.varian}\n" +
+                "Penggantian: ${salesData.penggantian}\n" +
+                "SPD : ${salesData.spd}/${salesData.spdPercentage}%\n" +
+                "STD : ${salesData.std}/${salesData.stdPercentage}%.\n" +
+                "APC : ${salesData.apc1}/${salesData.apc1Percentage}%\n" +
+                "Margin : ${salesData.margin}/${salesData.marginPercentage}%\n" +
+                "Sales lpptk : ${salesData.salesLpptk}\n" +
+                "Akm sales : ${salesData.akmSales}\n" +
                 "\n" +
                 " Audit : \n" +
                 "Nk:-Rp\n" +
@@ -239,73 +200,66 @@ fun GenerateResultDialog(
                 "Dry :0\n" +
                 "Buah: / %\n" +
                 "4. Mr. Bread\n" +
-                "margin total : 695.000"
+                "margin total : 0"
     ).toAnnotatedString()
 
-    if (openDialog) {
-        Dialog(
-            onDismissRequest = onDismiss,
-            properties = DialogProperties(
-                usePlatformDefaultWidth = false
-            )
+    Dialog(
+        onDismissRequest = onDismiss,
+        properties = DialogProperties(
+            usePlatformDefaultWidth = false
+        )
+    ) {
+        Surface(
+            shape = RoundedCornerShape(8.dp),
+            color = MaterialTheme.colorScheme.surface,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+                .wrapContentHeight()
         ) {
-            Surface(
-                shape = RoundedCornerShape(8.dp),
-                color = MaterialTheme.colorScheme.surface,
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
+                    .heightIn(300.dp)
                     .padding(16.dp)
-                    .wrapContentHeight()
+                    .verticalScroll(rememberScrollState())
             ) {
-                Column(
+                Text(
+                    text = contentDialog,
                     modifier = Modifier
-                        .heightIn(300.dp)
+                        .fillMaxWidth()
+                        .border(1.dp, Color.Gray)
                         .padding(16.dp)
-                        .verticalScroll(scrollState)
+                )
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    horizontalArrangement = Arrangement.End
                 ) {
-                    androidx.compose.foundation.text.selection.SelectionContainer {
-                        Text(
-                            text = contentDialog,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .border(1.dp, Color.Gray)
-                                .padding(16.dp)
-                        )
+                    Button(
+                        onClick = {
+                            clipboardManager.setText(contentDialog)
+                            Toast.makeText(context, "Text copied", Toast.LENGTH_SHORT).show()
+                        },
+                        shape = RoundedCornerShape(4.dp),
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(end = 16.dp)
+                    ) {
+                        Text("Copy")
                     }
 
-                    Row(
+                    Button(
+                        onClick = onDismiss,
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp),
-                        horizontalArrangement = Arrangement.End
+                            .weight(1f)
+                            .padding(start = 16.dp),
+                        shape = RoundedCornerShape(4.dp)
                     ) {
-                        Button(
-                            onClick = {
-                                clipboardManager.setText(contentDialog)
-                                Toast.makeText(context, "Text copied", Toast.LENGTH_SHORT)
-                                    .show()
-                            },
-                            shape = RoundedCornerShape(4.dp),
-                            modifier = Modifier
-                                .weight(1f)
-                                .padding(end = 16.dp)
-                        ) {
-                            Text("Copy")
-                        }
-
-                        Button(
-                            onClick = onDismiss,
-                            modifier = Modifier
-                                .weight(1f)
-                                .padding(start = 16.dp),
-                            shape = RoundedCornerShape(4.dp)
-                        ) {
-                            Text("Keluar")
-                        }
+                        Text("Keluar")
                     }
                 }
-
-
             }
         }
     }

@@ -78,7 +78,7 @@ dependencies {
     implementation(libs.androidx.work.runtime.ktx)
     implementation(libs.androidx.hilt.navigation.compose)
     implementation (libs.androidx.lifecycle.viewmodel.ktx)
-    implementation (libs.library.base)
+//    implementation (libs.library.base)
     implementation (libs.library.sync)
     implementation (libs.kotlinx.coroutines.core)
 }

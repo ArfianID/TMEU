@@ -1,18 +1,18 @@
 package com.arfian.tmeu.presentation.home
 
 import androidx.lifecycle.ViewModel
-import com.arfian.tmeu.domain.repository.SalesRepository
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-import javax.inject.Inject
 
-@HiltViewModel
-class HomeViewModel @Inject constructor(private val salesRepository: SalesRepository) : ViewModel() {
+class HomeViewModel () : ViewModel() {
     private val _data = MutableStateFlow(Data(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
     val data: StateFlow<Data> = _data
+
+//    init {
+//        calculateAndUpdateSales()
+//    }
 
     fun setSalesNet(value: Int) {
         _data.value = _data.value.copy(salesNet = value)
@@ -34,18 +34,17 @@ class HomeViewModel @Inject constructor(private val salesRepository: SalesReposi
         _data.value = _data.value.copy(target = value)
     }
 
-    fun calculateAndUpdateSales() {
-        /**TODO*/
+    private fun calculateAndUpdateSales() {
 //        val akmSales = _data.value.salesNet + previeusDays()
 
         val apc = _data.value.salesNet / _data.value.struk
         _data.value = _data.value.copy(apc = apc)
 
-        val spd =  _data.value.akmSales / getCurrentDate()
-        _data.value = _data.value.copy(spd = spd)
-
-        val ach = (_data.value.spd) / _data.value.target * 100
-        _data.value = _data.value.copy(ach = ach)
+//        val spd =  _data.value.akmSales / getCurrentDate()
+//        _data.value = _data.value.copy(spd = spd)
+//
+//        val ach = (_data.value.spd) / _data.value.target * 100
+//        _data.value = _data.value.copy(ach = ach)
     }
 
     private fun getCurrentDate(): Int {
